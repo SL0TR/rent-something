@@ -7,14 +7,14 @@ export function useStateContext() {
 }
 
 export const ContextProvider = ({ children }) => {
-  const [selectedIndex, setSelectedIndex] = useState();
+  const [selectedItem, setSelectedItem] = useState();
   const [filteredItems, setFilteredItems] = useState([]);
 
   return (
     <Context.Provider
       value={{
-        selectedIndex,
-        setSelectedIndex,
+        selectedItem,
+        setSelectedItem,
         filteredItems,
         setFilteredItems,
       }}

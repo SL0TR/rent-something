@@ -1,7 +1,7 @@
 import { useStateContext } from "context/Context";
 
 function ProductTable({ list }) {
-  const { selectedIndex, setSelectedIndex } = useStateContext();
+  const { selectedItem, setSelectedItem } = useStateContext();
 
   return (
     <>
@@ -20,9 +20,11 @@ function ProductTable({ list }) {
           {list.map((el, i) => (
             <tr
               style={{ cursor: "pointer" }}
-              className={i === selectedIndex ? "table-active" : null}
+              className={
+                el?.code === selectedItem?.code ? "table-active" : null
+              }
               key={el?.code}
-              onClick={() => setSelectedIndex(i)}
+              onClick={() => setSelectedItem(el)}
             >
               <th scope="row">{i + 1}</th>
               <td>{el?.name}</td>
@@ -34,9 +36,10 @@ function ProductTable({ list }) {
           ))}
         </tbody>
       </table>
-      {selectedIndex !== undefined && (
+      {selectedItem && (
         <div class="alert alert-primary" role="alert">
-          <p>Selected Item: {list[selectedIndex]?.name}</p>
+          <strong> Selected Item: </strong>
+          {selectedItem?.name}
         </div>
       )}
     </>
