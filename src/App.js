@@ -1,18 +1,29 @@
-import { useState } from "react";
-import "./App.css";
-import ProductTable from "components/ProductTable";
-import Search from "components/Search";
+import { ProductTable, Search, ReturnProduct, BookProduct } from "components";
 import useLocalStorage from "hooks/useLocalStorage";
+import "./App.css";
+import { useStateContext } from "context/Context";
 
 function App() {
   const items = useLocalStorage();
-  const [filteredItems, setFilteredItems] = useState([]);
+  const { filteredItems, setFilteredItems } = useStateContext();
 
   return (
     <div className="container py-5">
       <div className="row">
-        <Search setFilteredItems={setFilteredItems} items={items} />
-        <ProductTable list={filteredItems} />
+        <div className="col-12">
+          <Search setFilteredItems={setFilteredItems} items={items} />
+        </div>
+        <div className="col-12">
+          <ProductTable list={filteredItems} />
+        </div>
+        <div className="row justify-content-end">
+          <div className="col-auto">
+            <BookProduct />
+          </div>
+          <div className="col-auto">
+            <ReturnProduct />
+          </div>
+        </div>
       </div>
     </div>
   );
