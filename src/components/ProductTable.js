@@ -14,6 +14,7 @@ function ProductTable({ list }) {
             <th scope="col">Need to Repair</th>
             <th scope="col">Durability</th>
             <th scope="col">Mileage</th>
+            <th scope="col">Price</th>
           </tr>
         </thead>
         <tbody>
@@ -32,12 +33,13 @@ function ProductTable({ list }) {
               <td>{el?.needing_repair ? "Yes" : "No"}</td>
               <td>{`${el?.durability} / ${el?.max_durability}`}</td>
               <td>{el?.mileage}</td>
+              <td>${el?.price}</td>
             </tr>
           ))}
         </tbody>
       </table>
       {selectedItem && (
-        <div class="alert alert-primary" role="alert">
+        <div className="alert alert-primary" role="alert">
           <strong> Selected Item: </strong>
           {selectedItem?.name}
         </div>

@@ -1,4 +1,4 @@
-import React from "react";
+import ProductSelect from "./ProductSelect";
 
 function ReturnProduct() {
   return (
@@ -22,8 +22,8 @@ function ReturnProduct() {
         <div className="modal-dialog">
           <div className="modal-content">
             <div className="modal-header">
-              <h5 className="modal-title" id="exampleModalLabel">
-                Modal title
+              <h5 className="modal-title" id="bookModalLabel">
+                <ProductSelect />
               </h5>
               <button
                 type="button"
