@@ -1,14 +1,15 @@
 import { useStateContext } from "context/Context";
 import dayjs from "dayjs";
+import useLocalStorage from "hooks/useLocalStorage";
 import { useEffect, useState } from "react";
 import ProductSelect from "./ProductSelect";
 
 const dateStringFormat = "YYYY-MM-DD";
 
 function BookProduct() {
-  const { selectedItem } = useStateContext();
+  const [items] = useLocalStorage();
+  const { selectedItem, filteredItems, setFilteredItems } = useStateContext();
   const [totalPrice, setTotalPrice] = useState();
-
   const [duration, setDuration] = useState([
     dayjs().format(dateStringFormat),
     dayjs()
@@ -16,9 +17,12 @@ function BookProduct() {
       .format(dateStringFormat),
   ]);
 
-  function handleBookSubmit() {
-    const daysInBetween = dayjs(duration[1]).diff(duration[0], "day");
+  function getDaysInBetween() {
+    return dayjs(duration[1]).diff(duration[0], "day");
+  }
 
+  function handleEstimateSubmit() {
+    const daysInBetween = getDaysInBetween();
     if (daysInBetween < selectedItem?.minimum_rent_period) {
       alert(
         `You have to rent it for minimum of ${selectedItem?.minimum_rent_period} days`
@@ -28,6 +32,34 @@ function BookProduct() {
 
     const price = daysInBetween * (selectedItem?.price || 0);
     setTotalPrice(price);
+  }
+
+  function handleBookSubmit() {
+    const daysInBetween = getDaysInBetween();
+    const itemIndex = filteredItems.findIndex(
+      (el) => el?.code === selectedItem?.code
+    );
+    let oldItems = [...items];
+
+    let durabilityPoint = 0;
+
+    if (oldItems[itemIndex]?.type === "plain") {
+      durabilityPoint = 1;
+    }
+
+    if (oldItems[itemIndex]?.type === "meter") {
+      durabilityPoint = 2;
+    }
+
+    oldItems[itemIndex] = {
+      ...oldItems[itemIndex],
+      mileage: (oldItems[itemIndex]?.mileage || 0) + 10 * daysInBetween,
+      durability:
+        oldItems[itemIndex]?.durability - durabilityPoint * daysInBetween,
+    };
+
+    setFilteredItems(oldItems);
+    closeModal();
   }
 
   function closeModal() {
@@ -65,7 +97,7 @@ function BookProduct() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="bookModalLabel">
-                <ProductSelect />
+                {totalPrice ? selectedItem?.name : <ProductSelect />}
               </h5>
               <button
                 type="button"
@@ -132,8 +164,9 @@ function BookProduct() {
                 No
               </button>
               <button
-                onClick={handleBookSubmit}
+                onClick={!totalPrice ? handleEstimateSubmit : handleBookSubmit}
                 type="button"
+                data-bs-dismiss={totalPrice ? "modal" : null}
                 className="btn btn-primary"
               >
                 Yes

@@ -13,7 +13,7 @@ function useLocalStorage() {
     }
   }, []);
 
-  return items;
+  return [items, setItems];
 }
 
 export default useLocalStorage;

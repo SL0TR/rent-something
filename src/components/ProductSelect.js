@@ -3,7 +3,7 @@ import useLocalStorage from "hooks/useLocalStorage";
 
 function ProductSelect() {
   const { selectedItem, setSelectedItem } = useStateContext();
-  const items = useLocalStorage();
+  const [items] = useLocalStorage();
 
   return (
     <select

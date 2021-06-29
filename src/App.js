@@ -2,9 +2,10 @@ import { ProductTable, Search, ReturnProduct, BookProduct } from "components";
 import useLocalStorage from "hooks/useLocalStorage";
 import "./App.css";
 import { useStateContext } from "context/Context";
+import { useEffect } from "react";
 
 function App() {
-  const items = useLocalStorage();
+  const [items] = useLocalStorage();
   const { filteredItems, setFilteredItems } = useStateContext();
 
   return (
