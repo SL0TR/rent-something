@@ -6,8 +6,7 @@ import ProductSelect from "./ProductSelect";
 const dateStringFormat = "YYYY-MM-DD";
 
 function BookProduct() {
-  const { selectedItem, filteredItems, allItems, setAllItems } =
-    useStateContext();
+  const { selectedItem, allItems, setAllItems } = useStateContext();
   const [totalPrice, setTotalPrice] = useState();
   const [duration, setDuration] = useState([
     dayjs().format(dateStringFormat),
@@ -16,12 +15,15 @@ function BookProduct() {
       .format(dateStringFormat),
   ]);
 
+  console.log(allItems);
+
   function getDaysInBetween() {
     return dayjs(duration[1]).diff(duration[0], "day");
   }
 
   function handleEstimateSubmit() {
     const daysInBetween = getDaysInBetween();
+
     if (daysInBetween < selectedItem?.minimum_rent_period) {
       alert(
         `You have to rent it for minimum of ${selectedItem?.minimum_rent_period} days`
@@ -36,7 +38,7 @@ function BookProduct() {
   function handleBookSubmit() {
     const daysInBetween = getDaysInBetween();
 
-    const itemIndex = filteredItems.findIndex(
+    const itemIndex = allItems.findIndex(
       (el) => el?.code === selectedItem?.code
     );
 
