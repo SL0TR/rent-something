@@ -1,19 +1,26 @@
 import { useStateContext } from "context/Context";
 import { getFilteredItems } from "lib/utils";
-import React, { useEffect, useState } from "react";
+import { debounce } from "lodash";
+import React, { useCallback, useEffect, useState } from "react";
 
 function Search() {
   const [searchText, setSearchText] = useState("");
   const { setFilteredItems, allItems } = useStateContext();
 
+  function filterList(query, list) {
+    setFilteredItems(getFilteredItems(query, list));
+  }
+
+  const debounceFilterList = useCallback(debounce(filterList, 300), []);
+
   useEffect(() => {
     if (searchText) {
-      setFilteredItems(getFilteredItems(searchText, allItems));
+      debounceFilterList(searchText, allItems);
       return;
     }
 
     setFilteredItems(allItems);
-  }, [allItems, setFilteredItems, searchText]);
+  }, [allItems, setFilteredItems, searchText, debounceFilterList]);
 
   return (
     <div className="row justify-content-end">

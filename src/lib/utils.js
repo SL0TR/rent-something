@@ -5,3 +5,10 @@ export function getFilteredItems(query, list) {
 
   return filteredList;
 }
+
+export function getSelectedItem(obj, index) {
+  return {
+    ...obj,
+    index,
+  };
+}

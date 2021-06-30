@@ -1,12 +1,19 @@
 import { useStateContext } from "context/Context";
 import dayjs from "dayjs";
 import { useEffect, useState } from "react";
+import ProductInfo from "./ProductInfo";
 import ProductSelect from "./ProductSelect";
 
 const dateStringFormat = "YYYY-MM-DD";
 
 function BookProduct() {
-  const { selectedItem, allItems, setAllItems } = useStateContext();
+  const {
+    selectedItem,
+    setSelectedItem,
+    allItems,
+    setAllItems,
+    setBookedItems,
+  } = useStateContext();
   const [totalPrice, setTotalPrice] = useState();
   const [duration, setDuration] = useState([
     dayjs().format(dateStringFormat),
@@ -14,8 +21,6 @@ function BookProduct() {
       .add(selectedItem?.minimum_rent_period || 0, "day")
       .format(dateStringFormat),
   ]);
-
-  console.log(allItems);
 
   function getDaysInBetween() {
     return dayjs(duration[1]).diff(duration[0], "day");
@@ -36,32 +41,27 @@ function BookProduct() {
   }
 
   function handleBookSubmit() {
-    const daysInBetween = getDaysInBetween();
+    if (!selectedItem?.availability) return;
 
+    const daysInBetween = getDaysInBetween();
     const itemIndex = allItems.findIndex(
       (el) => el?.code === selectedItem?.code
     );
 
-    let oldItems = [...allItems];
+    let newItems = [...allItems];
 
-    let durabilityPoint = 0;
-
-    if (oldItems[itemIndex]?.type === "plain") {
-      durabilityPoint = 1;
-    }
-
-    if (oldItems[itemIndex]?.type === "meter") {
-      durabilityPoint = 2;
-    }
-
-    oldItems[itemIndex] = {
-      ...oldItems[itemIndex],
-      mileage: (oldItems[itemIndex]?.mileage || 0) + 10 * daysInBetween,
-      durability:
-        oldItems[itemIndex]?.durability - durabilityPoint * daysInBetween,
+    newItems[itemIndex] = {
+      ...newItems[itemIndex],
+      availability: false,
     };
 
-    setAllItems(oldItems);
+    const bookedItem = {
+      ...newItems[itemIndex],
+      loanDays: daysInBetween,
+    };
+    setBookedItems((state) => [bookedItem, ...state]);
+    setAllItems(newItems);
+    setSelectedItem(null);
     closeModal();
   }
 
@@ -115,7 +115,10 @@ function BookProduct() {
                 {!totalPrice ? (
                   <>
                     <div className="col-12 my-3">
-                      <ProductSelect />
+                      <ProductSelect type="book" />
+                    </div>
+                    <div className="col-12 mb-3">
+                      <ProductInfo product={selectedItem} />
                     </div>
                     <div className="col-6">
                       <div className="form-group">
@@ -174,6 +177,7 @@ function BookProduct() {
                 type="button"
                 data-bs-dismiss={totalPrice ? "modal" : null}
                 className="btn btn-primary"
+                disabled={!selectedItem}
               >
                 Yes
               </button>

@@ -12,6 +12,8 @@ export const ContextProvider = ({ children }) => {
   const [allItems, setAllItems] = useLocalStorage("items", []);
   const [selectedItem, setSelectedItem] = useState();
   const [filteredItems, setFilteredItems] = useState([]);
+  const [bookedItems, setBookedItems] = useLocalStorage("bookedItem", []);
+  const [returnItem, setReturnItem] = useState();
 
   useEffect(() => {
     if (!allItems.length) {
@@ -28,6 +30,10 @@ export const ContextProvider = ({ children }) => {
         setFilteredItems,
         allItems,
         setAllItems,
+        bookedItems,
+        setBookedItems,
+        returnItem,
+        setReturnItem,
       }}
     >
       {children}

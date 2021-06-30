@@ -1,43 +1,59 @@
 import { useStateContext } from "context/Context";
 import { useState } from "react";
+import ProductInfo from "./ProductInfo";
 import ProductSelect from "./ProductSelect";
 
 function ReturnProduct() {
   const [totalPrice, setTotalPrice] = useState();
-  const [mileage, setMileage] = useState();
-  const { selectedItem, filteredItems, allItems, setAllItems } =
-    useStateContext();
+
+  const {
+    allItems,
+    setAllItems,
+    bookedItems,
+    returnItem,
+    setBookedItems,
+    setReturnItem,
+  } = useStateContext();
+  const mileage = returnItem?.loanDays * 10;
 
   function handleEstimateSubmit() {
-    const price = selectedItem?.price || 0;
+    const price = returnItem?.loanDays * (returnItem?.price || 0);
     setTotalPrice(price);
   }
 
   function handleBookSubmit() {
-    const itemIndex = filteredItems.findIndex(
-      (el) => el?.code === selectedItem?.code
-    );
+    const itemIndex = allItems.findIndex((el) => el?.code === returnItem?.code);
 
-    let oldItems = [...allItems];
+    let newItems = [...allItems];
 
-    // let durabilityPoint = 0;
+    const daysInBetween = returnItem?.loanDays;
 
-    // if (oldItems[itemIndex]?.type === "plain") {
-    //   durabilityPoint = 1;
-    // }
+    let durabilityPoint = 0;
 
-    // if (oldItems[itemIndex]?.type === "meter") {
-    //   durabilityPoint = 2;
-    // }
+    if (newItems[itemIndex]?.type === "plain") {
+      durabilityPoint = 1;
+    }
 
-    oldItems[itemIndex] = {
-      ...oldItems[itemIndex],
-      // mileage: (oldItems[itemIndex]?.mileage || 0) + 10 * daysInBetween,
-      // durability:
-      //   oldItems[itemIndex]?.durability - durabilityPoint * daysInBetween,
+    if (newItems[itemIndex]?.type === "meter") {
+      durabilityPoint = 2;
+    }
+
+    // daysInBetween + 2 * daysInBetween since each 10 miles 2 points is decreased and 10 miles is added each day
+    const pointsToDeduct = durabilityPoint * daysInBetween + 2 * daysInBetween;
+
+    newItems[itemIndex] = {
+      ...newItems[itemIndex],
+      mileage: (newItems[itemIndex]?.mileage || 0) + 10 * daysInBetween,
+      durability: newItems[itemIndex]?.durability - pointsToDeduct,
+      availability: true,
     };
 
-    setAllItems(oldItems);
+    let newBookedItems = [...bookedItems];
+    newBookedItems.splice(returnItem?.index, 1);
+
+    setBookedItems(newBookedItems);
+    setAllItems(newItems);
+    setReturnItem(null);
     closeModal();
   }
 
@@ -63,11 +79,11 @@ function ReturnProduct() {
         aria-labelledby="exampleModalLabel"
         aria-hidden="true"
       >
-        <div className="modal-dialog">
+        <div className="modal-dialog modal-dialog-centered">
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="bookModalLabel">
-                Rent A Product
+                Return A Product
               </h5>
               <button
                 type="button"
@@ -79,18 +95,22 @@ function ReturnProduct() {
             <div className="modal-body">
               {!totalPrice ? (
                 <div className="col-12 my-3">
-                  <ProductSelect />
-                  <div className="input-group mt-4">
-                    <input
-                      type="number"
-                      className="form-control"
-                      placeholder="Mileage"
-                      aria-label="Mileage"
-                      aria-describedby="basic-addon1"
-                      value={mileage}
-                      onChange={(e) => setMileage(e?.target?.value)}
-                    />
-                  </div>
+                  <ProductSelect type="return" />
+                  {returnItem && (
+                    <>
+                      <div className="col-12 my-3">
+                        <ProductInfo product={returnItem} type="rent" />
+                      </div>
+                      <div className="col-12">
+                        <p>Used Mileage</p>
+                      </div>
+                      <div className="col-12">
+                        <strong>
+                          <p>{mileage}</p>
+                        </strong>
+                      </div>
+                    </>
+                  )}
                 </div>
               ) : (
                 <div className="col-auto">
@@ -106,6 +126,7 @@ function ReturnProduct() {
                 type="button"
                 className="btn btn-secondary"
                 data-bs-dismiss="modal"
+                onClick={closeModal}
               >
                 No
               </button>
@@ -113,6 +134,8 @@ function ReturnProduct() {
                 onClick={!totalPrice ? handleEstimateSubmit : handleBookSubmit}
                 type="button"
                 className="btn btn-primary"
+                data-bs-dismiss={totalPrice ? "modal" : null}
+                disabled={!returnItem}
               >
                 Yes
               </button>

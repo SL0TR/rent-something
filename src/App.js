@@ -1,10 +1,14 @@
 import { ProductTable, Search, ReturnProduct, BookProduct } from "components";
+import ResetSeedData from "components/ResetSeed";
 
 function App() {
   return (
     <div className="container py-5">
       <div className="row">
-        <div className="col-12">
+        <div className="col-2">
+          <ResetSeedData />
+        </div>
+        <div className="col-10">
           <Search />
         </div>
         <div className="col-12">
