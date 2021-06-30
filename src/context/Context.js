@@ -1,4 +1,6 @@
-import React, { useContext, useState } from "react";
+import useLocalStorage from "hooks/useLocalStorage";
+import { seedItems } from "lib/storage";
+import React, { useContext, useEffect, useState } from "react";
 
 const Context = React.createContext();
 
@@ -7,8 +9,15 @@ export function useStateContext() {
 }
 
 export const ContextProvider = ({ children }) => {
+  const [allItems, setAllItems] = useLocalStorage("items", []);
   const [selectedItem, setSelectedItem] = useState();
   const [filteredItems, setFilteredItems] = useState([]);
+
+  useEffect(() => {
+    if (!allItems.length) {
+      setAllItems(seedItems);
+    }
+  }, [allItems, setAllItems]);
 
   return (
     <Context.Provider
@@ -17,6 +26,8 @@ export const ContextProvider = ({ children }) => {
         setSelectedItem,
         filteredItems,
         setFilteredItems,
+        allItems,
+        setAllItems,
       }}
     >
       {children}

@@ -1,8 +1,7 @@
 import { useStateContext } from "context/Context";
 
-function ProductTable({ list }) {
-  const { selectedItem, setSelectedItem } = useStateContext();
-
+function ProductTable() {
+  const { selectedItem, setSelectedItem, filteredItems } = useStateContext();
   return (
     <>
       <table className="table table-hover">
@@ -18,7 +17,7 @@ function ProductTable({ list }) {
           </tr>
         </thead>
         <tbody>
-          {list.map((el, i) => (
+          {filteredItems.map((el, i) => (
             <tr
               style={{ cursor: "pointer" }}
               className={
@@ -32,7 +31,7 @@ function ProductTable({ list }) {
               <td>{el?.code}</td>
               <td>{el?.needing_repair ? "Yes" : "No"}</td>
               <td>{`${el?.durability} / ${el?.max_durability}`}</td>
-              <td>{el?.mileage}</td>
+              <td>{el?.mileage ? el?.mileage : 0}</td>
               <td>${el?.price}</td>
             </tr>
           ))}

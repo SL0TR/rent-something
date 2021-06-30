@@ -1,14 +1,18 @@
 import { useStateContext } from "context/Context";
 import dayjs from "dayjs";
-import useLocalStorage from "hooks/useLocalStorage";
 import { useEffect, useState } from "react";
 import ProductSelect from "./ProductSelect";
 
 const dateStringFormat = "YYYY-MM-DD";
 
 function BookProduct() {
-  const [items] = useLocalStorage();
-  const { selectedItem, filteredItems, setFilteredItems } = useStateContext();
+  const {
+    selectedItem,
+    filteredItems,
+    setFilteredItems,
+    allItems,
+    setAllItems,
+  } = useStateContext();
   const [totalPrice, setTotalPrice] = useState();
   const [duration, setDuration] = useState([
     dayjs().format(dateStringFormat),
@@ -36,10 +40,12 @@ function BookProduct() {
 
   function handleBookSubmit() {
     const daysInBetween = getDaysInBetween();
+
     const itemIndex = filteredItems.findIndex(
       (el) => el?.code === selectedItem?.code
     );
-    let oldItems = [...items];
+
+    let oldItems = [...allItems];
 
     let durabilityPoint = 0;
 
@@ -58,7 +64,7 @@ function BookProduct() {
         oldItems[itemIndex]?.durability - durabilityPoint * daysInBetween,
     };
 
-    setFilteredItems(oldItems);
+    setAllItems(oldItems);
     closeModal();
   }
 

@@ -1,4 +1,4 @@
-const items = [
+export const seedItems = [
   {
     code: "p1",
     name: "Air Compressor 12 GAS",
@@ -205,8 +205,8 @@ const items = [
   },
 ];
 
-export function setDataToLocalstorage() {
-  localStorage.setItem("items", JSON.stringify(items));
+export function setDataToLocalstorage(data) {
+  localStorage.setItem("items", JSON.stringify(data));
 }
 
 export function getDataFromLocalstorage() {

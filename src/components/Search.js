@@ -1,27 +1,27 @@
-import React, { useEffect, useRef } from "react";
+import { useStateContext } from "context/Context";
+import { getFilteredItems } from "lib/utils";
+import React, { useEffect, useState } from "react";
 
-function Search({ setFilteredItems, items }) {
-  const searchInputRef = useRef(null);
-
-  function handleSearchTextChange() {
-    const searchText = searchInputRef?.current?.value;
-    const filteredList = items.filter((el) =>
-      el?.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredItems(filteredList);
-  }
+function Search() {
+  const [searchText, setSearchText] = useState("");
+  const { setFilteredItems, allItems } = useStateContext();
 
   useEffect(() => {
-    setFilteredItems(items);
-  }, [items, setFilteredItems]);
+    if (searchText) {
+      setFilteredItems(getFilteredItems(searchText, allItems));
+      return;
+    }
+
+    setFilteredItems(allItems);
+  }, [allItems, setFilteredItems, searchText]);
 
   return (
     <div className="row justify-content-end">
       <div className="col-4 mb-4">
         <div className="input-group mb-3">
           <input
-            ref={searchInputRef}
-            onChange={handleSearchTextChange}
+            value={searchText}
+            onChange={(e) => setSearchText(e?.target?.value)}
             type="text"
             className="form-control"
             placeholder="Search"

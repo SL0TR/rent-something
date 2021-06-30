@@ -32,7 +32,7 @@ function ReturnProduct() {
                 aria-label="Close"
               ></button>
             </div>
-            <div className="modal-body">...</div>
+            <div className="modal-body"></div>
             <div className="modal-footer">
               <button
                 type="button"
