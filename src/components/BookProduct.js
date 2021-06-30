@@ -6,13 +6,8 @@ import ProductSelect from "./ProductSelect";
 const dateStringFormat = "YYYY-MM-DD";
 
 function BookProduct() {
-  const {
-    selectedItem,
-    filteredItems,
-    setFilteredItems,
-    allItems,
-    setAllItems,
-  } = useStateContext();
+  const { selectedItem, filteredItems, allItems, setAllItems } =
+    useStateContext();
   const [totalPrice, setTotalPrice] = useState();
   const [duration, setDuration] = useState([
     dayjs().format(dateStringFormat),
@@ -103,7 +98,7 @@ function BookProduct() {
           <div className="modal-content">
             <div className="modal-header">
               <h5 className="modal-title" id="bookModalLabel">
-                {totalPrice ? selectedItem?.name : <ProductSelect />}
+                Book A Product
               </h5>
               <button
                 type="button"
@@ -117,6 +112,9 @@ function BookProduct() {
               <div className="row">
                 {!totalPrice ? (
                   <>
+                    <div className="col-12 my-3">
+                      <ProductSelect />
+                    </div>
                     <div className="col-6">
                       <div className="form-group">
                         <label className="mb-1" htmlFor="fromInput">

@@ -1,5 +1,4 @@
 import { ProductTable, Search, ReturnProduct, BookProduct } from "components";
-import "./App.css";
 
 function App() {
   return (
