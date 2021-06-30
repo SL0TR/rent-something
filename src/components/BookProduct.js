@@ -66,7 +66,7 @@ function BookProduct() {
   }
 
   function closeModal() {
-    setTotalPrice(null);
+    setTotalPrice();
   }
 
   useEffect(() => {
@@ -117,41 +117,45 @@ function BookProduct() {
                     <div className="col-12 my-3">
                       <ProductSelect type="book" />
                     </div>
-                    <div className="col-12 mb-3">
-                      <ProductInfo product={selectedItem} />
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <label className="mb-1" htmlFor="fromInput">
-                          From
-                        </label>
-                        <input
-                          value={duration[0]}
-                          type="date"
-                          className="form-control"
-                          id="fromInput"
-                          onChange={(e) =>
-                            setDuration([e.target.value, duration[1]])
-                          }
-                        />
-                      </div>
-                    </div>
-                    <div className="col-6">
-                      <div className="form-group">
-                        <label className="mb-1" htmlFor="toInput">
-                          To
-                        </label>
-                        <input
-                          value={duration[1]}
-                          type="date"
-                          className="form-control"
-                          id="toInput"
-                          onChange={(e) =>
-                            setDuration([duration[0], e.target.value])
-                          }
-                        />
-                      </div>
-                    </div>
+                    {selectedItem && (
+                      <>
+                        <div className="col-12 mb-3">
+                          <ProductInfo product={selectedItem} />
+                        </div>
+                        <div className="col-6">
+                          <div className="form-group">
+                            <label className="mb-1" htmlFor="fromInput">
+                              From
+                            </label>
+                            <input
+                              value={duration[0]}
+                              type="date"
+                              className="form-control"
+                              id="fromInput"
+                              onChange={(e) =>
+                                setDuration([e.target.value, duration[1]])
+                              }
+                            />
+                          </div>
+                        </div>
+                        <div className="col-6">
+                          <div className="form-group">
+                            <label className="mb-1" htmlFor="toInput">
+                              To
+                            </label>
+                            <input
+                              value={duration[1]}
+                              type="date"
+                              className="form-control"
+                              id="toInput"
+                              onChange={(e) =>
+                                setDuration([duration[0], e.target.value])
+                              }
+                            />
+                          </div>
+                        </div>
+                      </>
+                    )}
                   </>
                 ) : (
                   <div className="col-auto">

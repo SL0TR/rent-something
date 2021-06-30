@@ -10,23 +10,25 @@ function ReturnProduct() {
     allItems,
     setAllItems,
     bookedItems,
-    returnItem,
     setBookedItems,
-    setReturnItem,
+    setSelectedItem,
+    selectedItem,
   } = useStateContext();
-  const mileage = returnItem?.loanDays * 10;
+  const mileage = selectedItem?.loanDays * 10;
 
   function handleEstimateSubmit() {
-    const price = returnItem?.loanDays * (returnItem?.price || 0);
+    const price = selectedItem?.loanDays * (selectedItem?.price || 0);
     setTotalPrice(price);
   }
 
   function handleBookSubmit() {
-    const itemIndex = allItems.findIndex((el) => el?.code === returnItem?.code);
+    const itemIndex = allItems.findIndex(
+      (el) => el?.code === selectedItem?.code
+    );
 
     let newItems = [...allItems];
 
-    const daysInBetween = returnItem?.loanDays;
+    const daysInBetween = selectedItem?.loanDays;
 
     let durabilityPoint = 0;
 
@@ -49,11 +51,11 @@ function ReturnProduct() {
     };
 
     let newBookedItems = [...bookedItems];
-    newBookedItems.splice(returnItem?.index, 1);
+    newBookedItems.splice(selectedItem?.index, 1);
 
     setBookedItems(newBookedItems);
     setAllItems(newItems);
-    setReturnItem(null);
+    setSelectedItem();
     closeModal();
   }
 
@@ -96,17 +98,17 @@ function ReturnProduct() {
               {!totalPrice ? (
                 <div className="col-12 my-3">
                   <ProductSelect type="return" />
-                  {returnItem && (
+                  {selectedItem && (
                     <>
                       <div className="col-12 my-3">
-                        <ProductInfo product={returnItem} type="rent" />
+                        <ProductInfo product={selectedItem} type="rent" />
                       </div>
                       <div className="col-12">
                         <p>Used Mileage</p>
                       </div>
                       <div className="col-12">
                         <strong>
-                          <p>{mileage}</p>
+                          <p>{mileage || 0}</p>
                         </strong>
                       </div>
                     </>
@@ -115,7 +117,7 @@ function ReturnProduct() {
               ) : (
                 <div className="col-auto">
                   <p>
-                    Your total Price is <strong>${totalPrice} </strong>
+                    Your total Price is <strong>${totalPrice || 0} </strong>
                   </p>
                   Do you want to proceed?
                 </div>
@@ -135,7 +137,7 @@ function ReturnProduct() {
                 type="button"
                 className="btn btn-primary"
                 data-bs-dismiss={totalPrice ? "modal" : null}
-                disabled={!returnItem}
+                disabled={!selectedItem}
               >
                 Yes
               </button>

@@ -7,7 +7,7 @@ function ProductInfo({ product, type = "book" }) {
           {type === "book" ? (
             <div className="col-12">
               <strong>Minimum Rental Period</strong>
-              {` ${product?.minimum_rent_period} days`}
+              {`${product?.minimum_rent_period}`}
             </div>
           ) : (
             <div className="col-12">
