@@ -17,7 +17,7 @@ function ProductInfo({ product, type = "book" }) {
           )}
 
           <div className="col-12">
-            <strong>Mileage</strong> {product?.mileage}
+            <strong>Mileage</strong> {product?.mileage || 0}
           </div>
           <div className="col-12">
             <strong>Need Fix?</strong> {product?.needing_repair ? "Yes" : "No"}
